@@ -88,8 +88,8 @@ class AuthRemoteDataSource {
   }
 
   /// Google ile giriş akışı:
-  /// 1) google_sign_in ile Google kullanıcısını al
-  /// 2) idToken + accessToken ile Supabase'e signInWithIdToken çağır
+  /// 1) google_sign_in (v7.x) ile kullanıcıyı authenticate et
+  /// 2) idToken ile Supabase'e signInWithIdToken çağır
   /// 3) profiles tablosunda upsert + select ile UserProfileModel dön
   Future<UserProfileModel> signInWithGoogle() async {
     try {
@@ -97,16 +97,17 @@ class AuthRemoteDataSource {
       const webClientId = 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
       const iosClientId = 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com';
 
+      // google_sign_in 7.x: singleton + initialize + authenticate
       final googleSignIn = GoogleSignIn.instance;
       await googleSignIn.initialize(
         clientId: iosClientId,
         serverClientId: webClientId,
       );
 
-      final googleUser = await googleSignIn.signIn();
-      final googleAuth = await googleUser?.authentication;
-      final accessToken = googleAuth?.accessToken;
-      final idToken = googleAuth?.idToken;
+      // Etkileşimli kimlik doğrulama
+      final googleUser = await googleSignIn.authenticate();
+      final googleAuth = googleUser.authentication;
+      final idToken = googleAuth.idToken;
 
       if (idToken == null) {
         throw const AuthException('Google ID Token alınamadı.');
@@ -115,7 +116,6 @@ class AuthRemoteDataSource {
       final response = await _client.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
-        accessToken: accessToken,
       );
 
       final user = response.user;
@@ -144,6 +144,9 @@ class AuthRemoteDataSource {
             },
       );
     } catch (e) {
+      throw AuthException('Google Login Hatası: $e');
+    }
+  } catch (e) {
       throw AuthException('Google Login Hatası: $e');
     }
   }
