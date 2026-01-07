@@ -97,7 +97,8 @@ class AuthRemoteDataSource {
       const webClientId = 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
       const iosClientId = 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com';
 
-      final googleSignIn = GoogleSignIn(
+      final googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize(
         clientId: iosClientId,
         serverClientId: webClientId,
       );
