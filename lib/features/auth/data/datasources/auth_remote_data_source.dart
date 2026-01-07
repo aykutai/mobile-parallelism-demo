@@ -96,12 +96,21 @@ class AuthRemoteDataSource {
 
   Future<UserProfileModel> signInWithGoogle() async {
     // NOT: Google OAuth için Supabase dashboard'da Redirect URL ayarlamanız gerekir.
-    final response = await _client.auth.signInWithOAuth(
+    //
+    // supabase_flutter v2'de signInWithOAuth bool döner; asıl oturum değişikliği
+    // authStateChanges stream'i ve currentSession üzerinden takip edilir.
+    //
+    // Basitlik için burada:
+    // 1) OAuth akışını başlatıyoruz,
+    // 2) Çağrı sonrası mevcut oturumu (_client.auth.currentUser) kontrol ediyoruz.
+    //
+    // Üretim ortamında, bu akışı onAuthStateChange üzerinden dinlemek daha sağlıklıdır.
+    await _client.auth.signInWithOAuth(
       OAuthProvider.google,
       redirectTo: null,
     );
 
-    final user = response.user;
+    final user = _client.auth.currentUser;
     if (user == null) {
       throw AuthException('Google ile giriş başarısız.');
     }
