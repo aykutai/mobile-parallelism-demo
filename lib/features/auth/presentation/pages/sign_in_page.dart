@@ -9,16 +9,16 @@ class SignInPage extends ConsumerStatefulWidget {
   const SignInPage({super.key});
 
   @override
-  ConsumerState&lt;SignInPage> createState() =&gt; _SignInPageState();
+  ConsumerState<SignInPage> createState() => _SignInPageState();
 }
 
-class _SignInPageState extends ConsumerState&lt;SignInPage> {
+class _SignInPageState extends ConsumerState<SignInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _loading = false;
   String? _error;
 
-  AuthRepository get _repo =&gt; ref.read(authRepositoryProvider);
+  AuthRepository get _repo => ref.read(authRepositoryProvider);
 
   Future<void> _signInWithEmail() async {
     setState(() {

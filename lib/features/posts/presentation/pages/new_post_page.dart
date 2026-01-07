@@ -7,15 +7,15 @@ class NewPostPage extends StatefulWidget {
   const NewPostPage({super.key});
 
   @override
-  State&lt;NewPostPage> createState() =&gt; _NewPostPageState();
+  State<NewPostPage> createState() => _NewPostPageState();
 }
 
-class _NewPostPageState extends State&lt;NewPostPage> {
+class _NewPostPageState extends State<NewPostPage> {
   final _controller = TextEditingController();
   bool _submitting = false;
   String? _error;
 
-  Future&lt;void> _submit() async {
+  Future<void> _submit() async {
     // TODO: Supabase posts tablosuna insert eklenecek.
     setState(() {
       _submitting = true;
