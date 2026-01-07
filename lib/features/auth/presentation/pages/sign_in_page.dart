@@ -32,8 +32,8 @@ class _SignInPageState extends ConsumerState<SignInPage> {
     );
 
     result.fold(
-      (l) =&gt; setState(() =&gt; _error = l),
-      (r) =&gt; Navigator.of(context).pushReplacementNamed('/home'),
+      (l) => setState(() => _error = l),
+      (r) => Navigator.of(context).pushReplacementNamed('/home'),
     );
 
     setState(() {
@@ -50,8 +50,8 @@ class _SignInPageState extends ConsumerState<SignInPage> {
     final result = await _repo.signInWithGoogle();
 
     result.fold(
-      (l) =&gt; setState(() =&gt; _error = l),
-      (r) =&gt; Navigator.of(context).pushReplacementNamed('/home'),
+      (l) => setState(() => _error = l),
+      (r) => Navigator.of(context).pushReplacementNamed('/home'),
     );
 
     setState(() {
@@ -69,10 +69,9 @@ class _SignInPageState extends ConsumerState<SignInPage> {
   void _goToSignUp() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) =&gt; const SignUpPage(),
+        builder: (_) => const SignUpPage(),
       ),
-    );
-  }
+    );_code }
 
   @override
   Widget build(BuildContext context) {

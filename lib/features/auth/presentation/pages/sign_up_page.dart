@@ -8,17 +8,17 @@ class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  ConsumerState&lt;SignUpPage> createState() =&gt; _SignUpPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends ConsumerState&lt;SignUpPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _displayNameController = TextEditingController();
   bool _loading = false;
   String? _error;
 
-  AuthRepository get _repo =&gt; ref.read(authRepositoryProvider);
+  AuthRepository get _repo => ref.read(authRepositoryProvider);
 
   Future<void> _signUp() async {
     setState(() {
@@ -35,8 +35,10 @@ class _SignUpPageState extends ConsumerState&lt;SignUpPage> {
     );
 
     result.fold(
-      (l) =&gt; setState(() =&gt; _error = l),
-      (r) =&gt; Navigator.of(context).pushReplacementNamed('/home'),
+      (l) => setState(() => _error = l),
+      (r) => Navigator.of(context).pushReplacementNamed('/home'),
+    );
+,
     );
 
     setState(() {
