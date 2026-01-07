@@ -146,9 +146,6 @@ class AuthRemoteDataSource {
     } catch (e) {
       throw AuthException('Google Login Hatası: $e');
     }
-  } catch (e) {
-      throw AuthException('Google Login Hatası: $e');
-    }
   }
 
   Future<void> signOut() async {
