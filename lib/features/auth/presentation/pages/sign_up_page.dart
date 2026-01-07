@@ -38,8 +38,6 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       (l) => setState(() => _error = l),
       (r) => Navigator.of(context).pushReplacementNamed('/home'),
     );
-,
-    );
 
     setState(() {
       _loading = false;
