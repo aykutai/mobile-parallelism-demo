@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -89,9 +87,12 @@ class AuthRemoteDataSource {
     await _client.auth.resetPasswordForEmail(email);
   }
 
+  /// Google ile giriş akışı:
+  /// 1) google_sign_in ile Google kullanıcısını al
+  /// 2) idToken + accessToken ile Supabase'e signInWithIdToken çağır
+  /// 3) profiles tablosunda upsert + select ile UserProfileModel dön
   Future<UserProfileModel> signInWithGoogle() async {
     try {
-      // 1. Google tarafında oturum aç
       // TODO: Web ve iOS için kendi client ID'lerini buraya koymalısın.
       const webClientId = 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
       const iosClientId = 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com';
@@ -110,7 +111,6 @@ class AuthRemoteDataSource {
         throw const AuthException('Google ID Token alınamadı.');
       }
 
-      // 2. Bu token ile Supabase'e giriş yap
       final response = await _client.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
@@ -122,33 +122,29 @@ class AuthRemoteDataSource {
         throw const AuthException('Kullanıcı bulunamadı.');
       }
 
-      // 3. Profil verisini güncelle/al
-    final result = await _client
-        .from('profiles')
-        .upsert({
-          'id': user.id,
-          'email': user.email,
-          'display_name': user.userMetadata?['full_name'],
-        })
-        .select();
-
-    final data = result as List;
-    final profileRow =
-        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
-
-    return UserProfileModel.fromJson(
-      profileRow ??
-          {
+      final result = await _client
+          .from('profiles')
+          .upsert({
             'id': user.id,
             'email': user.email,
-          },
-    );
-  } catch (e) {
-    throw AuthException('Google Login Hatası: $e');
- _code }new
-</}
- },
-    );
+            'display_name': user.userMetadata?['full_name'],
+          })
+          .select();
+
+      final data = result as List;
+      final profileRow =
+          data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+
+      return UserProfileModel.fromJson(
+        profileRow ??
+            {
+              'id': user.id,
+              'email': user.email,
+            },
+      );
+    } catch (e) {
+      throw AuthException('Google Login Hatası: $e');
+    }
   }
 
   Future<void> signOut() async {
