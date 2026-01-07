@@ -71,7 +71,8 @@ class _SignInPageState extends ConsumerState<SignInPage> {
       MaterialPageRoute(
         builder: (_) => const SignUpPage(),
       ),
-    );_code }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
