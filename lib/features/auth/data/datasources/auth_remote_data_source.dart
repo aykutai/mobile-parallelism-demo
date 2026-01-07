@@ -123,28 +123,31 @@ class AuthRemoteDataSource {
       }
 
       // 3. Profil verisini güncelle/al
-      final profileRow = await _client
-          .from('profiles')
-          .upsert({
+    final result = await _client
+        .from('profiles')
+        .upsert({
+          'id': user.id,
+          'email': user.email,
+          'display_name': user.userMetadata?['full_name'],
+        })
+        .select();
+
+    final data = result as List;
+    final profileRow =
+        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+
+    return UserProfileModel.fromJson(
+      profileRow ??
+          {
             'id': user.id,
             'email': user.email,
-            'display_name': user.userMetadata?['full_name'],
-          })
-          .select()
-          .eq('id', user.id)
-          .maybeSingle();
-
-      return UserProfileModel.fromJson(
-        profileRow ??
-            {
-              'id': user.id,
-              'email': user.email,
-            },
-      );
-    } catch (e) {
-      throw AuthException('Google Login Hatası: $e');
-    }
-  },
+          },
+    );
+  } catch (e) {
+    throw AuthException('Google Login Hatası: $e');
+ _code }new
+</}
+ },
     );
   }
 
