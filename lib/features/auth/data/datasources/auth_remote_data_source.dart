@@ -116,15 +116,17 @@ class AuthRemoteDataSource {
       throw AuthException('Google ile giriş başarısız.');
     }
 
-    final profileRow = await _client
+    final result = await _client
         .from('profiles')
         .upsert({
           'id': user.id,
           'email': user.email,
         })
-        .select()
-        .eq('id', user.id)
-        .maybeSingle();
+        .select();
+
+    final data = result as List;
+    final profileRow =
+        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -132,6 +134,8 @@ class AuthRemoteDataSource {
             'id': user.id,
             'email': user.email,
           },
+    );
+  },
     );
   }
 
