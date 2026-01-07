@@ -1,6 +1,5 @@
 # Flutter uygulamanıza hoş geldiniz 👋
 
-Bu depo artık Flutter tabanlı bir mobil uygulama projesidir. Eski Expo / React Native kodları, gerekirse bakabilmeniz için `legacy_expo/` klasörüne taşındı.
 
 ## Başlangıç
 
