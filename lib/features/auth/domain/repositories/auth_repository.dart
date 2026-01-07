@@ -4,22 +4,22 @@ import '../entities/user_profile.dart';
 
 /// Auth ile ilgili domain seviyesindeki sözleşme.
 abstract class AuthRepository {
-  Future<Either&lt;String, UserProfile&gt;> signUpWithEmail({
+  Future<Either<String, UserProfile>> signUpWithEmail({
     required String email,
     required String password,
     String? displayName,
   });
 
-  Future<Either&lt;String, UserProfile&gt;> signInWithEmail({
+  Future<Either<String, UserProfile>> signInWithEmail({
     required String email,
     required String password,
   });
 
-  Future<Either&lt;String, Unit&gt;> sendPasswordResetEmail({
+  Future<Either<String, Unit>> sendPasswordResetEmail({
     required String email,
   });
 
-  Future<Either&lt;String, UserProfile&gt;> signInWithGoogle();
+  Future<Either<String, UserProfile>> signInWithGoogle();
 
   Future<void> signOut();
 

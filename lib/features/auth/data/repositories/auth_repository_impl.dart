@@ -10,7 +10,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
 
   @override
-  Future<Either&lt;String, UserProfile&gt;> signUpWithEmail({
+  Future<Either<String, UserProfile>> signUpWithEmail({
     required String email,
     required String password,
     String? displayName,
@@ -28,7 +28,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either&lt;String, UserProfile&gt;> signInWithEmail({
+  Future<Either<String, UserProfile>> signInWithEmail({
     required String email,
     required String password,
   }) async {
@@ -44,7 +44,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either&lt;String, Unit&gt;> sendPasswordResetEmail({
+  Future<Either<String, Unit>> sendPasswordResetEmail({
     required String email,
   }) async {
     try {
@@ -56,7 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either&lt;String, UserProfile&gt;> signInWithGoogle() async {
+  Future<Either<String, UserProfile>> signInWithGoogle() async {
     try {
       final profile = await _remoteDataSource.signInWithGoogle();
       return Right(profile.toEntity());

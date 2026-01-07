@@ -17,7 +17,7 @@ class UserProfileModel with _$UserProfileModel {
     @JsonKey(name: 'created_at') DateTime? createdAt,
   }) = _UserProfileModel;
 
-  factory UserProfileModel.fromJson(Map&lt;String, dynamic&gt; json) =>
+  factory UserProfileModel.fromJson(Map<String, dynamic> json) =>
       _$UserProfileModelFromJson(json);
 }
 

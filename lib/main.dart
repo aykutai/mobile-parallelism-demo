@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/presentation/pages/sign_in_page.dart';
 import 'features/auth/presentation/pages/splash_page.dart';
-import 'features/home/presentation/pages/home_page.dart';
+import 'features/home/presentation/pages/root_tab_page.dart';
 
 /// TODO: .env veya güvenli yöntemle doldur:
 const supabaseUrl = 'https://YOUR-PROJECT-REF.supabase.co';
@@ -39,11 +39,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      // Auth durumuna göre içerde yönlendirme yapan SplashPage'i açıyoruz.
+      // Auth durumuna göre yükleme ekranı + ardından ana tabbar.
       home: const SplashPage(),
       routes: {
         '/auth': (_) => const SignInPage(),
-        '/home': (_) => const HomePage(),
+        '/home': (_) => const RootTabPage(),
       },
     );
   }

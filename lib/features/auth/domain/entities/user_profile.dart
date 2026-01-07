@@ -14,6 +14,6 @@ class UserProfile with _$UserProfile {
     DateTime? createdAt,
   }) = _UserProfile;
 
-  factory UserProfile.fromJson(Map&lt;String, dynamic&gt; json) =>
+  factory UserProfile.fromJson(Map<String, dynamic> json) =>
       _$UserProfileFromJson(json);
 }
