@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/config/supabase_client.dart';
@@ -89,52 +90,60 @@ class AuthRemoteDataSource {
   }
 
   Future<UserProfileModel> signInWithGoogle() async {
-    // NOT: Google OAuth için Supabase dashboard'da Redirect URL ayarlamanız gerekir.
-    //
-    // supabase_flutter v2'de signInWithOAuth bool döner; asıl oturum değişikliği
-    // authStateChanges stream'i ve currentSession üzerinden takip edilir.
-    //
-    // Bu metotta:
-    // 1) OAuth akışını başlatıyoruz,
-    // 2) onAuthStateChange üzerinden ilk signedIn event'ini bekliyoruz (timeout ile),
-    // 3) Kullanıcı için profiles tablosunda kayıt upsert edip döndürüyoruz.
-    await _client.auth.signInWithOAuth(
-      OAuthProvider.google,
-      redirectTo: null,
-    );
+    try {
+      // 1. Google tarafında oturum aç
+      // TODO: Web ve iOS için kendi client ID'lerini buraya koymalısın.
+      const webClientId = 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
+      const iosClientId = 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com';
 
-    // İlk signedIn event'ini, makul bir süre içinde bekle.
-    final authState = await _client.auth.onAuthStateChange
-        .firstWhere((event) => event.event == AuthChangeEvent.signedIn)
-        .timeout(const Duration(minutes: 2), onTimeout: () {
-      throw AuthException('Google ile giriş zaman aşımına uğradı.');
-    });
+      final googleSignIn = GoogleSignIn(
+        clientId: iosClientId,
+        serverClientId: webClientId,
+      );
 
-    final session = authState.session;
-    final user = session?.user;
-    if (user == null) {
-      throw AuthException('Google ile giriş başarısız.');
-    }
+      final googleUser = await googleSignIn.signIn();
+      final googleAuth = await googleUser?.authentication;
+      final accessToken = googleAuth?.accessToken;
+      final idToken = googleAuth?.idToken;
 
-    final result = await _client
-        .from('profiles')
-        .upsert({
-          'id': user.id,
-          'email': user.email,
-        })
-        .select();
+      if (idToken == null) {
+        throw const AuthException('Google ID Token alınamadı.');
+      }
 
-    final data = result as List;
-    final profileRow =
-        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+      // 2. Bu token ile Supabase'e giriş yap
+      final response = await _client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
 
-    return UserProfileModel.fromJson(
-      profileRow ??
-          {
+      final user = response.user;
+      if (user == null) {
+        throw const AuthException('Kullanıcı bulunamadı.');
+      }
+
+      // 3. Profil verisini güncelle/al
+      final profileRow = await _client
+          .from('profiles')
+          .upsert({
             'id': user.id,
             'email': user.email,
-          },
-    );
+            'display_name': user.userMetadata?['full_name'],
+          })
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
+      return UserProfileModel.fromJson(
+        profileRow ??
+            {
+              'id': user.id,
+              'email': user.email,
+            },
+      );
+    } catch (e) {
+      throw AuthException('Google Login Hatası: $e');
+    }
   },
     );
   }
