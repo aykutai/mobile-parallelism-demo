@@ -37,15 +37,11 @@ class AuthRemoteDataSource {
       if (displayName != null) 'display_name': displayName,
     });
 
-    final result = await _client
+    final profileRow = await _client
         .from('profiles')
         .select()
-        .filter('id', 'eq', user.id)
-        .limit(1);
-
-    final data = result as List;
-    final profileRow =
-        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+        .eq('id', user.id)
+        .maybeSingle();
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -71,15 +67,11 @@ class AuthRemoteDataSource {
       throw AuthException('Giriş başarısız.');
     }
 
-    final result = await _client
+    final profileRow = await _client
         .from('profiles')
         .select()
-        .filter('id', 'eq', user.id)
-        .limit(1);
-
-    final data = result as List;
-    final profileRow =
-        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+        .eq('id', user.id)
+        .maybeSingle();
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -115,19 +107,15 @@ class AuthRemoteDataSource {
       throw AuthException('Google ile giriş başarısız.');
     }
 
-    final result = await _client
+    final profileRow = await _client
         .from('profiles')
         .upsert({
           'id': user.id,
           'email': user.email,
         })
         .select()
-        .filter('id', 'eq', user.id)
-        .limit(1);
-
-    final data = result as List;
-    final profileRow =
-        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+        .eq('id', user.id)
+        .maybeSingle();
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -149,15 +137,11 @@ class AuthRemoteDataSource {
       if (user == null) {
         yield null;
       } else {
-        final result = await _client
+        final profileRow = await _client
             .from('profiles')
             .select()
-            .filter('id', 'eq', user.id)
-            .limit(1);
-
-        final data = result as List;
-        final profileRow =
-            data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+            .eq('id', user.id)
+            .maybeSingle();
 
         if (profileRow == null) {
           yield UserProfileModel(
