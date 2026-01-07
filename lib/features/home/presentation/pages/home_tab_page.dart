@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../posts/presentation/pages/new_post_page.dart';
+
 /// Alt barın birinci sekmesi: Ana sayfa.
 /// İçinde 2 tab'li bir TabBar var:
 /// - Takip ettiklerim
 /// - Keşfet
+/// Sağ altta bir FloatingActionButton ile yeni post ekranına gider.
 class HomeTabPage extends StatelessWidget {
   const HomeTabPage({super.key});
 
@@ -26,6 +29,16 @@ class HomeTabPage extends StatelessWidget {
             _FollowingFeedPlaceholder(),
             _ExploreFeedPlaceholder(),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const NewPostPage(),
+              ),
+            );
+          },
+          child: const Icon(Icons.add),
         ),
       ),
     );
