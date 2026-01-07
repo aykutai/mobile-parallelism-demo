@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'features/auth/presentation/pages/sign_in_page.dart';
+import 'features/auth/presentation/pages/splash_page.dart';
+import 'features/home/presentation/pages/home_page.dart';
+
 /// TODO: .env veya güvenli yöntemle doldur:
 const supabaseUrl = 'https://YOUR-PROJECT-REF.supabase.co';
 const supabaseAnonKey = 'YOUR-ANON-KEY';
@@ -35,31 +39,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Clean Architecture + Supabase kurulumu hazır.'),
-        ),
-      ),
+      // Auth durumuna göre içerde yönlendirme yapan SplashPage'i açıyoruz.
+      home: const SplashPage(),
+      routes: {
+        '/auth': (_) => const SignInPage(),
+        '/home': (_) => const HomePage(),
+      },
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter\'a Geçiş'),
-      ),
-      body: const Center(
-        child: Text(
-          'Bu proje artık Flutter ile çalışıyor.\n'
-          'Eski Expo / React Native kodları legacy_expo klasöründe.',
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-}
