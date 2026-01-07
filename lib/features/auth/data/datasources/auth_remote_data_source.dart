@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/config/supabase_client.dart';
@@ -92,17 +94,24 @@ class AuthRemoteDataSource {
     // supabase_flutter v2'de signInWithOAuth bool döner; asıl oturum değişikliği
     // authStateChanges stream'i ve currentSession üzerinden takip edilir.
     //
-    // Basitlik için burada:
+    // Bu metotta:
     // 1) OAuth akışını başlatıyoruz,
-    // 2) Çağrı sonrası mevcut oturumu (_client.auth.currentUser) kontrol ediyoruz.
-    //
-    // Üretim ortamında, bu akışı onAuthStateChange üzerinden dinlemek daha sağlıklıdır.
+    // 2) onAuthStateChange üzerinden ilk signedIn event'ini bekliyoruz (timeout ile),
+    // 3) Kullanıcı için profiles tablosunda kayıt upsert edip döndürüyoruz.
     await _client.auth.signInWithOAuth(
       OAuthProvider.google,
       redirectTo: null,
     );
 
-    final user = _client.auth.currentUser;
+    // İlk signedIn event'ini, makul bir süre içinde bekle.
+    final authState = await _client.auth.onAuthStateChange
+        .firstWhere((event) => event.event == AuthChangeEvent.signedIn)
+        .timeout(const Duration(minutes: 2), onTimeout: () {
+      throw AuthException('Google ile giriş zaman aşımına uğradı.');
+    });
+
+    final session = authState.session;
+    final user = session?.user;
     if (user == null) {
       throw AuthException('Google ile giriş başarısız.');
     }
