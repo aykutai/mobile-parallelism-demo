@@ -6,8 +6,8 @@ import '../../../auth/domain/repositories/auth_repository.dart';
 
 /// Kullanıcının profil ekranı.
 /// Üst kısımda avatar + istatistikler, altında tabbar ile farklı post listeleri.
-class HomePage extends ConsumerWidget {
-  const HomePage({super.key});
+class ProfilePage extends ConsumerWidget {
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
