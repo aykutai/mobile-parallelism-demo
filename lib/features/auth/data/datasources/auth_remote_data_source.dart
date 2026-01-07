@@ -40,10 +40,12 @@ class AuthRemoteDataSource {
     final result = await _client
         .from('profiles')
         .select()
-        .match({'id': user.id});
+        .filter('id', 'eq', user.id)
+        .limit(1);
 
-    final List data = result as List;
-    final profileRow = data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+    final data = result as List;
+    final profileRow =
+        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -72,10 +74,12 @@ class AuthRemoteDataSource {
     final result = await _client
         .from('profiles')
         .select()
-        .match({'id': user.id});
+        .filter('id', 'eq', user.id)
+        .limit(1);
 
-    final List data = result as List;
-    final profileRow = data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+    final data = result as List;
+    final profileRow =
+        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -109,10 +113,12 @@ class AuthRemoteDataSource {
           'email': user.email,
         })
         .select()
-        .match({'id': user.id});
+        .filter('id', 'eq', user.id)
+        .limit(1);
 
-    final List data = result as List;
-    final profileRow = data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+    final data = result as List;
+    final profileRow =
+        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -137,9 +143,10 @@ class AuthRemoteDataSource {
         final result = await _client
             .from('profiles')
             .select()
-            .match({'id': user.id});
+            .filter('id', 'eq', user.id)
+            .limit(1);
 
-        final List data = result as List;
+        final data = result as List;
         final profileRow =
             data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
