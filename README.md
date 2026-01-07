@@ -43,16 +43,6 @@ Flutter ile çalışacağınız temel klasör ve dosyalar:
 - `lib/` – Widget'lar, sayfalar ve iş mantığı için Dart dosyaları
 - `pubspec.yaml` – Paket bağımlılıkları ve asset tanımları
 
-Eski Expo / React Native kodları:
-
-- `legacy_expo/` altında tutulmaktadır.
-  - `legacy_expo/app/`
-  - `legacy_expo/components/`
-  - `legacy_expo/hooks/`
-  - vb.
-
-Bu klasör, Flutter geçişi sırasında referans olarak kullanılabilir; yeni geliştirmeler Flutter tarafında yapılmalıdır.
-
 ## Faydalı bağlantılar
 
 - [Flutter dokümantasyonu](https://docs.flutter.dev/)
