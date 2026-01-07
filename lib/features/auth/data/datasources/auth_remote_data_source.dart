@@ -40,10 +40,12 @@ class AuthRemoteDataSource {
     final result = await _client
         .from('profiles')
         .select()
-        .match({'id': user.id});
+        .filter('id', 'eq', user.id)
+        .limit(1);
 
-    final List data = result as List;
-    final profileRow = data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+    final data = result as List;
+    final profileRow =
+        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -72,10 +74,12 @@ class AuthRemoteDataSource {
     final result = await _client
         .from('profiles')
         .select()
-        .match({'id': user.id});
+        .filter('id', 'eq', user.id)
+        .limit(1);
 
-    final List data = result as List;
-    final profileRow = data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+    final data = result as List;
+    final profileRow =
+        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -92,12 +96,21 @@ class AuthRemoteDataSource {
 
   Future<UserProfileModel> signInWithGoogle() async {
     // NOT: Google OAuth için Supabase dashboard'da Redirect URL ayarlamanız gerekir.
-    final response = await _client.auth.signInWithOAuth(
+    //
+    // supabase_flutter v2'de signInWithOAuth bool döner; asıl oturum değişikliği
+    // authStateChanges stream'i ve currentSession üzerinden takip edilir.
+    //
+    // Basitlik için burada:
+    // 1) OAuth akışını başlatıyoruz,
+    // 2) Çağrı sonrası mevcut oturumu (_client.auth.currentUser) kontrol ediyoruz.
+    //
+    // Üretim ortamında, bu akışı onAuthStateChange üzerinden dinlemek daha sağlıklıdır.
+    await _client.auth.signInWithOAuth(
       OAuthProvider.google,
       redirectTo: null,
     );
 
-    final user = response.user;
+    final user = _client.auth.currentUser;
     if (user == null) {
       throw AuthException('Google ile giriş başarısız.');
     }
@@ -109,10 +122,12 @@ class AuthRemoteDataSource {
           'email': user.email,
         })
         .select()
-        .match({'id': user.id});
+        .filter('id', 'eq', user.id)
+        .limit(1);
 
-    final List data = result as List;
-    final profileRow = data.isNotEmpty ? data.first as Map<String, dynamic> : null;
+    final data = result as List;
+    final profileRow =
+        data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
     return UserProfileModel.fromJson(
       profileRow ??
@@ -137,9 +152,10 @@ class AuthRemoteDataSource {
         final result = await _client
             .from('profiles')
             .select()
-            .match({'id': user.id});
+            .filter('id', 'eq', user.id)
+            .limit(1);
 
-        final List data = result as List;
+        final data = result as List;
         final profileRow =
             data.isNotEmpty ? data.first as Map<String, dynamic> : null;
 
